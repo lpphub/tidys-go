@@ -1,0 +1,119 @@
+package user
+
+import (
+	"context"
+	"errors"
+	"time"
+
+	"tidys-go/logic/dto"
+	"tidys-go/pkg/consts"
+	"tidys-go/pkg/errs"
+	"tidys-go/pkg/strutils"
+
+	"gorm.io/gorm"
+)
+
+type Service struct {
+	userRepo *UserRepo
+}
+
+func NewService(repo *UserRepo) *Service {
+	return &Service{
+		userRepo: repo,
+	}
+}
+
+func (s *Service) Create(ctx context.Context, req dto.CreateUserReq) (*User, error) {
+	exists, _ := s.userRepo.ExistsByEmail(ctx, req.Email)
+	if exists {
+		return nil, errs.ErrUserExists
+	}
+
+	user := User{
+		Name:      strutils.ExtractNameFromEmail(req.Email),
+		Email:     req.Email,
+		Status:    consts.StatusActive,
+		CreatedAt: time.Now(),
+	}
+
+	if err := user.SetPassword(req.Password); err != nil {
+		return nil, errs.ErrInvalidPassword
+	}
+
+	if err := s.userRepo.Create(ctx, &user); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (s *Service) ValidateLogin(ctx context.Context, email, password string) (*User, error) {
+	user, err := s.userRepo.GetByEmail(ctx, email)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errs.ErrLoginFailed
+		}
+		return nil, err
+	}
+
+	if !user.IsActive() {
+		return nil, errs.ErrUserDisabled
+	}
+
+	if err := user.ValidatePassword(password); err != nil {
+		return nil, errs.ErrLoginFailed
+	}
+
+	return user, nil
+}
+
+func (s *Service) Get(ctx context.Context, userID uint) (*User, error) {
+	return s.userRepo.First(ctx, userID)
+}
+
+func (s *Service) GetByEmail(ctx context.Context, email string) (*User, error) {
+	return s.userRepo.GetByEmail(ctx, email)
+}
+
+func (s *Service) GetByIDs(ctx context.Context, ids []uint) ([]User, error) {
+	return s.userRepo.FindByIDs(ctx, ids)
+}
+
+func (s *Service) GetByEmails(ctx context.Context, emails []string) ([]*User, error) {
+	return s.userRepo.GetByEmails(ctx, emails)
+}
+
+func (s *Service) UpdateProfile(ctx context.Context, userID uint, req dto.UpdateProfileReq) error {
+	user, err := s.Get(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	user.UpdateProfile(req.Name, req.Avatar)
+
+	return s.userRepo.Update(ctx, userID, map[string]interface{}{
+		"name":       user.Name,
+		"avatar":     user.Avatar,
+		"updated_at": time.Now(),
+	})
+}
+
+func (s *Service) ChangePassword(ctx context.Context, userID uint, req dto.ChangePasswordReq) error {
+	user, err := s.Get(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	if err = user.ValidatePassword(req.OldPassword); err != nil {
+		return errs.ErrLoginFailed
+	}
+
+	if err = user.SetPassword(req.NewPassword); err != nil {
+		return errs.ErrInvalidPassword
+	}
+
+	return s.userRepo.Update(ctx, userID, map[string]interface{}{
+		"password":   user.Password,
+		"updated_at": time.Now(),
+	})
+}

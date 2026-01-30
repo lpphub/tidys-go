@@ -1,0 +1,42 @@
+package infra
+
+import (
+	"github.com/lpphub/goweb/pkg/config"
+)
+
+type DBConfig struct {
+	Host     string
+	Port     int
+	User     string
+	Password string
+	Dbname   string
+}
+
+type RedisConfig struct {
+	Host     string
+	Port     int
+	Password string
+	DB       int
+}
+
+type JWTConfig struct {
+	Secret            string
+	ExpireTime        int64
+	RefreshExpireTime int64
+}
+
+type ServerConfig struct {
+	Port int
+	Mode string
+}
+
+type Config struct {
+	Database DBConfig
+	Redis    RedisConfig
+	JWT      JWTConfig
+	Server   ServerConfig
+}
+
+func LoadConfig() (*Config, error) {
+	return config.Load[Config]("./config", "config", "yml")
+}

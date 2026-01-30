@@ -1,0 +1,60 @@
+package user
+
+import (
+	"errors"
+	"tidys-go/pkg/consts"
+	"time"
+
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
+)
+
+type User struct {
+	ID        uint           `gorm:"primaryKey" json:"id"`
+	Name      string         `gorm:"name" json:"name"`
+	Email     string         `gorm:"email" json:"email"`
+	Password  string         `gorm:"password" json:"-"`
+	Avatar    string         `gorm:"avatar" json:"avatar"`
+	Status    int8           `gorm:"status;default:1" json:"status"`
+	CreatedAt time.Time      `gorm:"created_at" json:"createdAt"`
+	UpdatedAt time.Time      `gorm:"updated_at" json:"updatedAt"`
+	DeletedAt gorm.DeletedAt `gorm:"deleted_at" json:"-"`
+}
+
+func (*User) TableName() string {
+	return "users"
+}
+
+func (u *User) IsActive() bool {
+	return u.Status == consts.StatusActive
+}
+
+func (u *User) UpdateProfile(name, avatar string) {
+	if name != "" {
+		u.Name = name
+	}
+	if avatar != "" {
+		u.Avatar = avatar
+	}
+	u.UpdatedAt = time.Now()
+}
+
+func (u *User) ValidatePassword(password string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+	if err != nil {
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return errors.New("password mismatch")
+		}
+		return err
+	}
+	return nil
+}
+
+func (u *User) SetPassword(password string) error {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	u.Password = string(hash)
+	return nil
+}

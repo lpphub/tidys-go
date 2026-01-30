@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wire:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(wc:*)",
+      "Bash(go test:*)",
+      "Bash(go build:*)",
+      "Bash(go mod tidy:*)",
+      "Bash(tree:*)",
+      "Bash(done:*)",
+      "Bash(~/go/bin/goimports:*)",
+      "Bash(D:/go/bin/goimports:*)",
+      "Bash(git checkout:*)"
+    ]
+  }
+}

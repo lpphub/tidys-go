@@ -1,0 +1,78 @@
+package auth
+
+import (
+	"context"
+	"tidys-go/infra/jwt"
+	"tidys-go/logic/dto"
+	"tidys-go/logic/user"
+
+	"github.com/jinzhu/copier"
+)
+
+type Service struct {
+	userSvc *user.Service
+}
+
+func NewService(userSvc *user.Service) *Service {
+	return &Service{
+		userSvc: userSvc,
+	}
+}
+
+func (s *Service) Register(ctx context.Context, req dto.AuthReq) (*dto.AuthResp, error) {
+	userReq := dto.CreateUserReq{
+		Email:    req.Email,
+		Password: req.Password,
+	}
+	newUser, err := s.userSvc.Create(ctx, userReq)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenPair, err := jwt.GenerateTokenPair(newUser.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	var authUser dto.AuthUser
+	_ = copier.Copy(&authUser, newUser)
+
+	return &dto.AuthResp{
+		User:         &authUser,
+		AccessToken:  tokenPair.AccessToken,
+		RefreshToken: tokenPair.RefreshToken,
+	}, nil
+}
+
+func (s *Service) Login(ctx context.Context, req dto.AuthReq) (*dto.AuthResp, error) {
+	loginUser, err := s.userSvc.ValidateLogin(ctx, req.Email, req.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenPair, err := jwt.GenerateTokenPair(loginUser.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	var authUser dto.AuthUser
+	_ = copier.Copy(&authUser, loginUser)
+
+	return &dto.AuthResp{
+		User:         &authUser,
+		AccessToken:  tokenPair.AccessToken,
+		RefreshToken: tokenPair.RefreshToken,
+	}, nil
+}
+
+func (s *Service) RefreshToken(_ context.Context, refreshToken string) (*dto.AuthResp, error) {
+	tokenPair, err := jwt.RefreshToken(refreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.AuthResp{
+		AccessToken:  tokenPair.AccessToken,
+		RefreshToken: tokenPair.RefreshToken,
+	}, nil
+}

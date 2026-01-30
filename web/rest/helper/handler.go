@@ -1,0 +1,77 @@
+package helper
+
+import (
+	"strconv"
+
+	"tidys-go/pkg/errs"
+	"tidys-go/web/middleware"
+
+	"github.com/gin-gonic/gin"
+	"github.com/lpphub/goweb/base"
+	"github.com/lpphub/goweb/pkg/logger"
+)
+
+// ---------------- JSON / Query ----------------
+
+// MustBindJSON 绑定 JSON 并返回 bool，失败返回 false
+func MustBindJSON(c *gin.Context, obj any) bool {
+	if err := c.ShouldBindJSON(obj); err != nil {
+		logger.Errw(c.Request.Context(), err)
+		base.FailWithErr(c, errs.ErrInvalidParam)
+		return false
+	}
+	return true
+}
+
+// MustBindQuery 绑定 Query 并返回 bool，失败返回 false
+func MustBindQuery(c *gin.Context, obj any) bool {
+	if err := c.ShouldBindQuery(obj); err != nil {
+		logger.Errw(c.Request.Context(), err)
+		base.FailWithErr(c, errs.ErrInvalidParam)
+		return false
+	}
+	return true
+}
+
+// ---------------- UserID ----------------
+
+// MustGetUserID 获取用户 ID，失败返回 0 + false
+func MustGetUserID(c *gin.Context) (uint, bool) {
+	userID, ok := middleware.GetUserID(c)
+	if !ok {
+		base.FailWithErr(c, errs.ErrNoToken)
+		return 0, false
+	}
+	return userID, true
+}
+
+// ---------------- Param ----------------
+
+// MustParseUintParam 解析 uint 参数，失败返回 0 + false
+func MustParseUintParam(c *gin.Context, param string) (uint, bool) {
+	id, err := strconv.ParseUint(c.Param(param), 10, 32)
+	if err != nil {
+		logger.Errw(c, err)
+		base.FailWithErr(c, errs.ErrInvalidParam)
+		return 0, false
+	}
+	return uint(id), true
+}
+
+// ---------------- Service Result 处理 ----------------
+
+func ResponseResult(c *gin.Context, err error, data ...any) {
+	if err != nil {
+		logger.Errw(c.Request.Context(), err)
+
+		base.FailWithError(c, err)
+		return
+	}
+
+	if len(data) == 0 {
+		base.OK(c)
+		return
+	}
+
+	base.OKWithData(c, data[0])
+}
