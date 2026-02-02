@@ -20,9 +20,13 @@ func NewNoteRepo(db *gorm.DB) *NoteRepo {
 }
 
 // CursorListBySpaceID lists notes with cursor pagination for a space
-func (r *NoteRepo) CursorListBySpaceID(ctx context.Context, spaceID uint, page pagination.CursorQuery) (*pagination.CursorPageData[model.Note], error) {
+func (r *NoteRepo) CursorListBySpaceID(ctx context.Context, spaceID uint, day string, page pagination.Cursor) (*pagination.CursorPageData[model.Note], error) {
 	query := r.DB().WithContext(ctx).Model(&model.Note{}).
 		Where("space_id = ?", spaceID)
+
+	if day != "" {
+		query = query.Where("DATE(created_at) = ?", day)
+	}
 
 	return pagination.QueryCursor[model.Note](query, page, pagination.OrderBy("id", true, func(n model.Note) uint { return n.ID }))
 }

@@ -6,12 +6,12 @@ import "gorm.io/gorm"
 Offset / 传统分页
 */
 
-type OffsetQuery struct {
+type Offset struct {
 	Page     int `json:"page" form:"page"`
 	PageSize int `json:"page_size" form:"page_size"`
 }
 
-func (p *OffsetQuery) Normalize() {
+func (p *Offset) Normalize() {
 	if p.Page <= 0 {
 		p.Page = 1
 	}
@@ -29,7 +29,7 @@ type OffsetPageData[T any] struct {
 }
 
 // OffsetScope GORM Scope
-func OffsetScope(p OffsetQuery) func(db *gorm.DB) *gorm.DB {
+func OffsetScope(p Offset) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		p.Normalize()
 		offset := (p.Page - 1) * p.PageSize
@@ -38,7 +38,7 @@ func OffsetScope(p OffsetQuery) func(db *gorm.DB) *gorm.DB {
 }
 
 // QueryOffset 执行分页
-func QueryOffset[T any](db *gorm.DB, p OffsetQuery) (*OffsetPageData[T], error) {
+func QueryOffset[T any](db *gorm.DB, p Offset) (*OffsetPageData[T], error) {
 	var (
 		total int64
 		list  []T

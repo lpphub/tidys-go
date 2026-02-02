@@ -21,12 +21,12 @@ const (
 	maxLimit     = 50
 )
 
-type CursorQuery struct {
+type Cursor struct {
 	Limit  int    `json:"limit"  form:"limit"`
 	Cursor string `json:"cursor" form:"cursor"`
 }
 
-func (p *CursorQuery) Normalize() {
+func (p *Cursor) Normalize() {
 	if p.Limit <= 0 {
 		p.Limit = defaultLimit
 	}
@@ -80,7 +80,7 @@ type CursorStrategy[T any] struct {
 
 func QueryCursor[T any](
 	db *gorm.DB,
-	q CursorQuery,
+	q Cursor,
 	strategy CursorStrategy[T],
 ) (*CursorPageData[T], error) {
 

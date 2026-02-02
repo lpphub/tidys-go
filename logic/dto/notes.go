@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"tidys-go/pkg/pagination"
 	"time"
 )
 
@@ -13,9 +14,9 @@ type NoteReq struct {
 }
 
 type GetNotesQuery struct {
-	Limit   int    `form:"limit"`
-	Cursor  string `form:"cursor"`
+	pagination.Cursor
 	SpaceID uint   `form:"spaceId"`
+	Day     string `form:"day"` // YYYY-MM-DD format for filtering by day
 }
 
 // Response DTOs

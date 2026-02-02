@@ -22,12 +22,7 @@ func NewService(noteRepo *repository.NoteRepo) *Service {
 
 // GetNotesList returns paginated notes list
 func (s *Service) GetNotesList(ctx context.Context, query dto.GetNotesQuery) (*pagination.CursorPageData[dto.Note], error) {
-	page := pagination.CursorQuery{
-		Limit:  query.Limit,
-		Cursor: query.Cursor,
-	}
-
-	result, err := s.noteRepo.CursorListBySpaceID(ctx, query.SpaceID, page)
+	result, err := s.noteRepo.CursorListBySpaceID(ctx, query.SpaceID, query.Day, query.Cursor)
 	if err != nil {
 		return nil, err
 	}
