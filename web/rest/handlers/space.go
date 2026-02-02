@@ -6,7 +6,6 @@ import (
 	"tidys-go/web/rest/helper"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lpphub/goweb/base"
 )
 
 // SpaceList 获取用户的所有空间
@@ -100,12 +99,6 @@ func SpaceInviteMember(c *gin.Context) {
 
 	var req dto.SpaceInviteMemberReq
 	if !helper.MustBindJSON(c, &req) {
-		return
-	}
-
-	// 限制批量数量
-	if len(req.Emails) > 100 {
-		base.FailWithErr(c, base.NewError(400, "单次最多邀请100人"))
 		return
 	}
 

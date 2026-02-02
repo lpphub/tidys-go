@@ -1,14 +1,18 @@
 package errs
 
-import "github.com/lpphub/goweb/base"
+import (
+	"net/http"
+
+	"github.com/lpphub/goweb/base"
+)
 
 var (
 	// 系统错误
-	ErrServerError = base.NewError(500, "server internal error")
+	ErrServerError = base.NewErrorWithStatus(500, "server internal error", http.StatusInternalServerError)
 
 	// 通用错误
-	ErrNoToken        = base.NewError(1000, "no token")
-	ErrInvalidToken   = base.NewError(1001, "invalid token")
+	ErrNoToken        = base.NewErrorWithStatus(1000, "no token", http.StatusUnauthorized)
+	ErrInvalidToken   = base.NewErrorWithStatus(1001, "invalid token", http.StatusUnauthorized)
 	ErrInvalidParam   = base.NewError(1100, "参数错误")
 	ErrRecordNotFound = base.NewError(1101, "数据不存在")
 
@@ -21,4 +25,5 @@ var (
 
 	ErrSpaceNotOwned   = base.NewError(2201, "空间无权限")
 	ErrDuplicateInvite = base.NewError(2202, "已邀请，请勿重复邀请")
+	ErrMaxInviteCount  = base.NewError(2203, "单次最多邀请100人")
 )

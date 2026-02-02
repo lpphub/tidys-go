@@ -17,7 +17,7 @@ import (
 func MustBindJSON(c *gin.Context, obj any) bool {
 	if err := c.ShouldBindJSON(obj); err != nil {
 		logger.Errw(c.Request.Context(), err)
-		base.FailWithErr(c, errs.ErrInvalidParam)
+		base.Fail(c, errs.ErrInvalidParam)
 		return false
 	}
 	return true
@@ -27,7 +27,7 @@ func MustBindJSON(c *gin.Context, obj any) bool {
 func MustBindQuery(c *gin.Context, obj any) bool {
 	if err := c.ShouldBindQuery(obj); err != nil {
 		logger.Errw(c.Request.Context(), err)
-		base.FailWithErr(c, errs.ErrInvalidParam)
+		base.Fail(c, errs.ErrInvalidParam)
 		return false
 	}
 	return true
@@ -39,7 +39,7 @@ func MustBindQuery(c *gin.Context, obj any) bool {
 func MustGetUserID(c *gin.Context) (uint, bool) {
 	userID, ok := middleware.GetUserID(c)
 	if !ok {
-		base.FailWithErr(c, errs.ErrNoToken)
+		base.Fail(c, errs.ErrNoToken)
 		return 0, false
 	}
 	return userID, true
@@ -52,7 +52,7 @@ func MustParseUintParam(c *gin.Context, param string) (uint, bool) {
 	id, err := strconv.ParseUint(c.Param(param), 10, 32)
 	if err != nil {
 		logger.Errw(c, err)
-		base.FailWithErr(c, errs.ErrInvalidParam)
+		base.Fail(c, errs.ErrInvalidParam)
 		return 0, false
 	}
 	return uint(id), true
@@ -64,7 +64,7 @@ func ResponseResult(c *gin.Context, err error, data ...any) {
 	if err != nil {
 		logger.Errw(c.Request.Context(), err)
 
-		base.FailWithError(c, err)
+		base.Fail(c, err)
 		return
 	}
 

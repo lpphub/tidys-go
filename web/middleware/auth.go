@@ -1,10 +1,9 @@
 package middleware
 
 import (
+	"strings"
 	"tidys-go/infra/jwt"
 	"tidys-go/pkg/errs"
-	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lpphub/goweb/base"
@@ -22,27 +21,27 @@ func JwtAuth() gin.HandlerFunc {
 		// 从 Header 中获取 token
 		authHeader := c.GetHeader(AuthorizationHeader)
 		if authHeader == "" {
-			base.FailWithErr(c, errs.ErrNoToken)
+			base.Fail(c, errs.ErrNoToken)
 			return
 		}
 
 		// 检查 Bearer 前缀
 		if !strings.HasPrefix(authHeader, BearerPrefix) {
-			base.FailWithErr(c, errs.ErrNoToken)
+			base.Fail(c, errs.ErrNoToken)
 			return
 		}
 
 		// 提取 token
 		tokenString := strings.TrimPrefix(authHeader, BearerPrefix)
 		if tokenString == "" {
-			base.FailWithErr(c, errs.ErrNoToken)
+			base.Fail(c, errs.ErrNoToken)
 			return
 		}
 
 		// 解析 token
 		claims, err := jwt.ParseAccessToken(tokenString)
 		if err != nil {
-			base.FailWithStatus(c, http.StatusUnauthorized, errs.ErrInvalidToken)
+			base.Fail(c, errs.ErrInvalidToken)
 			return
 		}
 

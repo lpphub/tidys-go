@@ -172,6 +172,10 @@ func (s *Service) GetMembers(ctx context.Context, spaceID uint) ([]dto.SpaceMemb
 }
 
 func (s *Service) InviteMember(ctx context.Context, spaceID, userID uint, emails []string) error {
+	if len(emails) > 100 {
+		return errs.ErrMaxInviteCount
+	}
+
 	space, err := s.spaceRepo.First(ctx, spaceID)
 	if err != nil {
 		return err
