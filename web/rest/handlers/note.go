@@ -16,7 +16,7 @@ func NoteList(c *gin.Context) {
 	}
 
 	data, err := logic.AppSvc.Note.GetNotesList(c.Request.Context(), query)
-	helper.ResponseResult(c, err, data)
+	helper.Respond(c, err, data)
 }
 
 // NoteCreate creates a new note
@@ -32,7 +32,7 @@ func NoteCreate(c *gin.Context) {
 	}
 
 	note, err := logic.AppSvc.Note.CreateNote(c.Request.Context(), userID, req)
-	helper.ResponseResult(c, err, note)
+	helper.Respond(c, err, note)
 }
 
 // NoteUpdate updates an existing note
@@ -42,7 +42,7 @@ func NoteUpdate(c *gin.Context) {
 		return
 	}
 
-	helper.ResponseResult(c, logic.AppSvc.Note.UpdateNote(c.Request.Context(), req.ID, req))
+	helper.Respond(c, logic.AppSvc.Note.UpdateNote(c.Request.Context(), req.ID, req))
 }
 
 // NoteDelete deletes a note
@@ -57,5 +57,5 @@ func NoteDelete(c *gin.Context) {
 		return
 	}
 
-	helper.ResponseResult(c, logic.AppSvc.Note.DeleteNote(c.Request.Context(), userID, id))
+	helper.Respond(c, logic.AppSvc.Note.DeleteNote(c.Request.Context(), userID, id))
 }

@@ -16,7 +16,7 @@ func SpaceList(c *gin.Context) {
 	}
 
 	data, err := logic.AppSvc.Space.GetSpaces(c.Request.Context(), userID)
-	helper.ResponseResult(c, err, data)
+	helper.Respond(c, err, data)
 }
 
 // SpaceCreate 创建空间
@@ -36,7 +36,7 @@ func SpaceCreate(c *gin.Context) {
 	if space != nil {
 		spaceID = space.ID
 	}
-	helper.ResponseResult(c, err, spaceID)
+	helper.Respond(c, err, spaceID)
 }
 
 // SpaceUpdate 更新空间
@@ -56,7 +56,7 @@ func SpaceUpdate(c *gin.Context) {
 		return
 	}
 
-	helper.ResponseResult(c, logic.AppSvc.Space.UpdateSpace(c.Request.Context(), spaceID, userID, req))
+	helper.Respond(c, logic.AppSvc.Space.UpdateSpace(c.Request.Context(), spaceID, userID, req))
 }
 
 // SpaceDelete 删除空间
@@ -71,7 +71,7 @@ func SpaceDelete(c *gin.Context) {
 		return
 	}
 
-	helper.ResponseResult(c, logic.AppSvc.Space.DeleteSpace(c.Request.Context(), spaceID, userID))
+	helper.Respond(c, logic.AppSvc.Space.DeleteSpace(c.Request.Context(), spaceID, userID))
 }
 
 // SpaceGetMembers 获取空间成员列表
@@ -82,7 +82,7 @@ func SpaceGetMembers(c *gin.Context) {
 	}
 
 	data, err := logic.AppSvc.Space.GetMembers(c.Request.Context(), spaceID)
-	helper.ResponseResult(c, err, data)
+	helper.Respond(c, err, data)
 }
 
 // SpaceInviteMember 邀请成员
@@ -102,7 +102,7 @@ func SpaceInviteMember(c *gin.Context) {
 		return
 	}
 
-	helper.ResponseResult(c, logic.AppSvc.Space.InviteMember(c.Request.Context(), spaceID, userID, req.Emails))
+	helper.Respond(c, logic.AppSvc.Space.InviteMember(c.Request.Context(), spaceID, userID, req.Emails))
 }
 
 // SpaceRemoveMember 移除成员
@@ -122,7 +122,7 @@ func SpaceRemoveMember(c *gin.Context) {
 		return
 	}
 
-	helper.ResponseResult(c, logic.AppSvc.Space.RemoveMember(c.Request.Context(), spaceID, userID, userIDToRemove))
+	helper.Respond(c, logic.AppSvc.Space.RemoveMember(c.Request.Context(), spaceID, userID, userIDToRemove))
 }
 
 // SpaceGetPendingInvites 获取待处理邀请
@@ -133,7 +133,7 @@ func SpaceGetPendingInvites(c *gin.Context) {
 	}
 
 	data, err := logic.AppSvc.Space.GetPendingInvites(c.Request.Context(), userID)
-	helper.ResponseResult(c, err, data)
+	helper.Respond(c, err, data)
 }
 
 // SpaceRespondInvite 响应邀请
@@ -155,5 +155,5 @@ func SpaceRespondInvite(c *gin.Context) {
 		return
 	}
 
-	helper.ResponseResult(c, logic.AppSvc.Space.RespondInvite(c.Request.Context(), id, userID, req.Action))
+	helper.Respond(c, logic.AppSvc.Space.RespondInvite(c.Request.Context(), id, userID, req.Action))
 }

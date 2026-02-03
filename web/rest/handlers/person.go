@@ -15,7 +15,7 @@ func UserGetProfile(c *gin.Context) {
 	}
 
 	user, err := logic.AppSvc.User.Get(c.Request.Context(), userID)
-	helper.ResponseResult(c, err, user)
+	helper.Respond(c, err, user)
 }
 
 func UserUpdateProfile(c *gin.Context) {
@@ -29,7 +29,7 @@ func UserUpdateProfile(c *gin.Context) {
 		return
 	}
 
-	helper.ResponseResult(c, logic.AppSvc.User.UpdateProfile(c.Request.Context(), userID, req))
+	helper.Respond(c, logic.AppSvc.User.UpdateProfile(c.Request.Context(), userID, req))
 }
 
 func UserChangePassword(c *gin.Context) {
@@ -43,5 +43,5 @@ func UserChangePassword(c *gin.Context) {
 		return
 	}
 
-	helper.ResponseResult(c, logic.AppSvc.User.ChangePassword(c.Request.Context(), userID, req))
+	helper.Respond(c, logic.AppSvc.User.ChangePassword(c.Request.Context(), userID, req))
 }

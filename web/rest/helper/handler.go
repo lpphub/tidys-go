@@ -60,18 +60,6 @@ func MustParseUintParam(c *gin.Context, param string) (uint, bool) {
 
 // ---------------- Service Result 处理 ----------------
 
-func ResponseResult(c *gin.Context, err error, data ...any) {
-	if err != nil {
-		logger.Errw(c.Request.Context(), err)
-
-		base.Fail(c, err)
-		return
-	}
-
-	if len(data) == 0 {
-		base.OK(c)
-		return
-	}
-
-	base.OKWithData(c, data[0])
+func Respond(c *gin.Context, err error, data ...any) {
+	base.Respond(c, err, data...)
 }

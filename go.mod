@@ -6,7 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/google/wire v0.7.0
 	github.com/jinzhu/copier v0.4.0
-	github.com/lpphub/goweb v0.1.1
+	github.com/lpphub/goweb v0.1.2
 	github.com/redis/go-redis/v9 v9.17.3
 	golang.org/x/crypto v0.47.0
 	gorm.io/driver/mysql v1.6.0

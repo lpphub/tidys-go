@@ -16,7 +16,7 @@ func AuthRegister(c *gin.Context) {
 	}
 
 	authData, err := logic.AppSvc.Auth.Register(c, req)
-	helper.ResponseResult(c, err, authData)
+	helper.Respond(c, err, authData)
 }
 
 // AuthLogin 用户登录
@@ -27,7 +27,7 @@ func AuthLogin(c *gin.Context) {
 	}
 
 	authData, err := logic.AppSvc.Auth.Login(c, req)
-	helper.ResponseResult(c, err, authData)
+	helper.Respond(c, err, authData)
 }
 
 // AuthRefreshToken 刷新 token
@@ -40,5 +40,5 @@ func AuthRefreshToken(c *gin.Context) {
 	}
 
 	tokenPair, err := logic.AppSvc.Auth.RefreshToken(c, req.RefreshToken)
-	helper.ResponseResult(c, err, tokenPair)
+	helper.Respond(c, err, tokenPair)
 }
