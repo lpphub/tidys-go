@@ -4,14 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"tidys-go/infra"
-	"tidys-go/logic"
-	"tidys-go/web/rest/handlers"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"tidys-go/infra"
+	"tidys-go/logic"
+	"tidys-go/web/rest/handlers"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -24,15 +24,11 @@ type App struct {
 }
 
 func New() *App {
-	engine := gin.New()
-	engine.Use(gin.Recovery())
-
 	app := &App{
-		engine: engine,
+		engine: gin.New(),
 	}
 
 	app.init()
-
 	return app
 }
 
@@ -49,12 +45,13 @@ func (a *App) init() {
 func (a *App) setupRouter() {
 	r := a.engine
 
+	// 全局中间件
+	r.Use(gin.Recovery())
+	r.Use(logx.GinAccessLog(logx.SkipPaths("/metrics", "/health")))
+
 	// pprof and metrics
 	//monitor.StartPprof()
 	monitor.RegisterMetrics(r)
-
-	// 全局中间件
-	r.Use(logx.GinAccessLog(logx.SkipPaths("/metrics", "/health")))
 
 	// 注册所有接口路由
 	handlers.RegisterRoutes(r)
