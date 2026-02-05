@@ -15,7 +15,7 @@ import (
 	"tidys-go/pkg/slices"
 
 	"github.com/lpphub/goweb/ext/dbx"
-	"github.com/lpphub/goweb/pkg/logger"
+	"github.com/lpphub/goweb/pkg/logging"
 	"gorm.io/gorm"
 )
 
@@ -107,7 +107,7 @@ func (s *Service) UpdateSpace(ctx context.Context, id, userID uint, req dto.Spac
 	}
 
 	if !space.IsOwnedBy(userID) {
-		logger.Warn(ctx, fmt.Sprintf("spaceId=[%d] update by not owner=[%d]", id, userID))
+		logging.Warn(ctx, fmt.Sprintf("spaceId=[%d] update by not owner=[%d]", id, userID))
 		//return errs.ErrSpaceNotOwned
 	}
 

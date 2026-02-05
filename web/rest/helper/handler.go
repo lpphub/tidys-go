@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/lpphub/goweb/base"
-	"github.com/lpphub/goweb/pkg/logger"
+	"github.com/lpphub/goweb/pkg/logging"
 )
 
 // ---------------- JSON / Query ----------------
@@ -16,7 +16,7 @@ import (
 // MustBindJSON 绑定 JSON 并返回 bool，失败返回 false
 func MustBindJSON(c *gin.Context, obj any) bool {
 	if err := c.ShouldBindJSON(obj); err != nil {
-		logger.Errw(c.Request.Context(), err)
+		logging.Errorw(c.Request.Context(), err)
 		base.Fail(c, errs.ErrInvalidParam)
 		return false
 	}
@@ -26,7 +26,7 @@ func MustBindJSON(c *gin.Context, obj any) bool {
 // MustBindQuery 绑定 Query 并返回 bool，失败返回 false
 func MustBindQuery(c *gin.Context, obj any) bool {
 	if err := c.ShouldBindQuery(obj); err != nil {
-		logger.Errw(c.Request.Context(), err)
+		logging.Errorw(c.Request.Context(), err)
 		base.Fail(c, errs.ErrInvalidParam)
 		return false
 	}
@@ -51,7 +51,7 @@ func MustGetUserID(c *gin.Context) (uint, bool) {
 func MustParseUintParam(c *gin.Context, param string) (uint, bool) {
 	id, err := strconv.ParseUint(c.Param(param), 10, 32)
 	if err != nil {
-		logger.Errw(c, err)
+		logging.Errorw(c, err)
 		base.Fail(c, errs.ErrInvalidParam)
 		return 0, false
 	}
