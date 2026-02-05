@@ -37,20 +37,16 @@ func NewService(spaceRepo *repository.SpaceRepo, memberRepo *repository.MemberRe
 }
 
 func (s *Service) GetSpaces(ctx context.Context, userID uint) ([]dto.SpaceDetail, error) {
-	// 获取用户参与的所有 space IDs（包括自己创建的）
-	spaceIDs, err := s.memberRepo.GetSpaceIDsByUserID(ctx, userID)
+	spaces, err := s.spaceRepo.FindByUserID(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
 
-	if len(spaceIDs) == 0 {
+	if len(spaces) == 0 {
 		return []dto.SpaceDetail{}, nil
 	}
 
-	spaces, err := s.spaceRepo.FindByIDs(ctx, spaceIDs)
-	if err != nil {
-		return nil, err
-	}
+	spaceIDs := slices.Map(spaces, func(sp model.Space) uint { return sp.ID })
 
 	tagCountMap, _ := s.spaceRepo.CountBySpaceIDs(ctx, spaceIDs, &tagsModel.Tag{})
 	memberCountMap, _ := s.spaceRepo.CountBySpaceIDs(ctx, spaceIDs, &model.SpaceMember{})
