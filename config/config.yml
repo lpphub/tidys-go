@@ -1,6 +1,5 @@
 database:
   host: 1Panel-mysql-TUuu
-#  host: 182.254.243.143
   port: 3306
   dbname: app_db
   user: test
@@ -8,7 +7,6 @@ database:
 
 redis:
   host: 1Panel-redis-dpZp
-#  host: 182.254.243.143
   port: 6379
   password: 32wB6ejWwb78cPKT
   db: 0

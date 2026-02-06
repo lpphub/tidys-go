@@ -1,6 +1,7 @@
 package infra
 
 import (
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/lpphub/goweb/pkg/config"
 )
 
