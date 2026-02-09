@@ -47,7 +47,7 @@ func (a *App) setupRouter() {
 
 	// 全局中间件
 	r.Use(gin.Recovery())
-	r.Use(logx.GinAccessLog(logx.SkipPaths("/metrics", "/health")))
+	r.Use(logx.GinAccessLog(logx.WithSkipPaths("/metrics", "/health")))
 
 	// pprof and metrics
 	//monitor.StartPprof()

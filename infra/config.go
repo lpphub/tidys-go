@@ -39,5 +39,5 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
-	return config.Load[Config]("./config", "config", "yml")
+	return config.LoadConf[Config]("./config/config.yml")
 }
