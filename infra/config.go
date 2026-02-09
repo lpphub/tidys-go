@@ -28,7 +28,6 @@ type JWTConfig struct {
 
 type ServerConfig struct {
 	Port int
-	Mode string
 }
 
 type Config struct {

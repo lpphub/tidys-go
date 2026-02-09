@@ -6,5 +6,5 @@ import (
 
 func main() {
 	app := web.New()
-    app.Run()
+	app.Run()
 }

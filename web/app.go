@@ -24,12 +24,14 @@ type App struct {
 }
 
 func New() *App {
-	app := &App{
+	return &App{
 		engine: gin.New(),
 	}
+}
 
-	app.init()
-	return app
+func (a *App) Run() {
+	a.init()
+	a.run()
 }
 
 func (a *App) init() {
@@ -37,7 +39,6 @@ func (a *App) init() {
 	infra.Init()
 	// 2.初始化逻辑层
 	logic.Init()
-
 	// 3.配置web路由
 	a.setupRouter()
 }
@@ -57,27 +58,30 @@ func (a *App) setupRouter() {
 	handlers.RegisterRoutes(r)
 }
 
-func (a *App) Run() {
-	srv := &http.Server{
+func (a *App) run() {
+	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", infra.Cfg.Server.Port),
 		Handler: a.engine,
 	}
+
 	go func() {
-		log.Printf("Server starting on %s", srv.Addr)
-		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("Failed to start server: %v", err)
+		log.Printf("Server starting on %s", server.Addr)
+		if err := server.ListenAndServe(); err != nil &&
+			!errors.Is(err, http.ErrServerClosed) {
+			log.Fatalf("Server start failed: %v", err)
 		}
 	}()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
 	<-quit
 	log.Println("Shutting down server...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	if err := srv.Shutdown(ctx); err != nil {
+	if err := server.Shutdown(ctx); err != nil {
 		log.Printf("Server forced to shutdown: %v", err)
 	} else {
 		log.Println("Server shutdown completed")
