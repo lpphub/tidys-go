@@ -4,7 +4,7 @@ import (
 	"strconv"
 
 	"tidys-go/pkg/errs"
-	"tidys-go/web/middleware"
+	"tidys-go/server/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lpphub/goweb/base"

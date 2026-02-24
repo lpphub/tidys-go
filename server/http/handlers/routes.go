@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"tidys-go/web/middleware"
+	"tidys-go/server/middleware"
 
 	"github.com/gin-gonic/gin"
 )

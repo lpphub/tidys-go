@@ -1,10 +1,10 @@
 package main
 
 import (
-	"tidys-go/web"
+	"tidys-go/server"
 )
 
 func main() {
-	app := web.New()
+	app := server.New()
 	app.Run()
 }

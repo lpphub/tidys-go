@@ -1,4 +1,4 @@
-package web
+package server
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"tidys-go/infra"
 	"tidys-go/logic"
-	"tidys-go/web/rest/handlers"
+	"tidys-go/server/http/handlers"
 	"time"
 
 	"github.com/gin-gonic/gin"

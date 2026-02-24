@@ -3,7 +3,7 @@ package handlers
 import (
 	"tidys-go/logic"
 	"tidys-go/logic/dto"
-	"tidys-go/web/rest/helper"
+	"tidys-go/server/http/helper"
 
 	"github.com/gin-gonic/gin"
 )
