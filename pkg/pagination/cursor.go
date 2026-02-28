@@ -49,13 +49,13 @@ CursorStrategy
 CursorStrategy 描述了一套游标分页策略，由三个阶段组成：
 
 1. Order：定义结果集的排序规则
-2. Apply：根据 cursor 追加分页过滤条件（WHERE）
+2. Filter：根据 cursor 追加分页过滤条件（WHERE）
 3. Next ：根据当前页最后一条记录生成下一页 cursor
 
 约束：
-- Order、Apply、Next 必须基于完全一致的字段与排序方向
+- Order、Filter、Next 必须基于完全一致的字段与排序方向
 - Order 中使用的字段必须全部包含在 cursor 中
-- Apply 的比较逻辑必须与 Order 的排序方向严格一致
+- Filter 的比较逻辑必须与 Order 的排序方向严格一致
 
 CursorStrategy 本身无状态，仅描述分页行为。
 */
@@ -64,9 +64,9 @@ type CursorStrategy[T any] struct {
 	// Order 定义分页所需的排序规则（必须和 cursor 一致）
 	Order func(db *gorm.DB) *gorm.DB
 
-	// Apply 根据 cursor 追加分页查询条件（WHERE）
+	// Filter 根据 cursor 追加分页查询条件（WHERE）
 	// cursor 为空或非法时应返回原 DB
-	Apply func(db *gorm.DB, cursor string) *gorm.DB
+	Filter func(db *gorm.DB, cursor string) *gorm.DB
 
 	// Next 根据一条记录生成下一页的 cursor
 	Next func(item T) (string, error)
@@ -92,8 +92,8 @@ func QueryCursor[T any](
 	}
 
 	// 2. apply cursor filter
-	if q.Cursor != "" && strategy.Apply != nil {
-		db = strategy.Apply(db, q.Cursor)
+	if q.Cursor != "" && strategy.Filter != nil {
+		db = strategy.Filter(db, q.Cursor)
 	}
 
 	var list []T
@@ -173,7 +173,7 @@ func OrderBy[T any, V comparable](
 			return db.Order(field + " " + order)
 		},
 
-		Apply: func(db *gorm.DB, cursor string) *gorm.DB {
+		Filter: func(db *gorm.DB, cursor string) *gorm.DB {
 			v, ok := decodeCursor[V](cursor)
 			if !ok {
 				return db
