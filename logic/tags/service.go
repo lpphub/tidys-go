@@ -40,14 +40,15 @@ func (s *Service) GetTags(ctx context.Context, spaceID uint) ([]dto.TagGroupDeta
 	for _, g := range groups {
 		dtoTags := slices.Map(tagsByGroup[g.ID], func(t model.Tag) dto.Tag {
 			return dto.Tag{
-				ID:        t.ID,
-				SpaceID:   t.SpaceID,
-				Content:   t.Content,
-				GroupID:   t.GroupID,
-				Color:     t.Color,
-				OrderNo:   t.OrderNo,
-				CreatedAt: t.CreatedAt,
-				UpdatedAt: &t.UpdatedAt,
+				ID:          t.ID,
+				SpaceID:     t.SpaceID,
+				Name:        t.Name,
+				Description: t.Description,
+				GroupID:     t.GroupID,
+				Color:       t.Color,
+				OrderNo:     t.OrderNo,
+				CreatedAt:   t.CreatedAt,
+				UpdatedAt:   &t.UpdatedAt,
 			}
 		})
 
@@ -88,11 +89,12 @@ func (s *Service) CreateTag(ctx context.Context, req dto.TagReq) (*model.Tag, er
 	}
 
 	tag := model.Tag{
-		SpaceID: req.SpaceID,
-		Content: req.Content,
-		GroupID: req.GroupID,
-		Color:   req.Color,
-		OrderNo: order,
+		SpaceID:     req.SpaceID,
+		Name:        req.Name,
+		Description: req.Description,
+		GroupID:     req.GroupID,
+		Color:       req.Color,
+		OrderNo:     order,
 	}
 
 	if err = s.tagRepo.Create(ctx, &tag); err != nil {
@@ -109,8 +111,9 @@ func (s *Service) UpdateTag(ctx context.Context, id uint, req dto.TagReq) error 
 	}
 
 	updates := map[string]interface{}{
-		"content": req.Content,
-		"color":   req.Color,
+		"name":        req.Name,
+		"description": req.Description,
+		"color":       req.Color,
 	}
 	return s.tagRepo.Update(ctx, id, updates)
 }

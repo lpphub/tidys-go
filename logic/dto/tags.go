@@ -5,10 +5,11 @@ import (
 )
 
 type TagReq struct {
-	Content string `json:"content"`
-	GroupID uint   `json:"groupId"`
-	Color   string `json:"color"`
-	SpaceID uint   `json:"spaceId"`
+	Name        string `json:"name"`
+	Description string `json:"description,omitempty"`
+	GroupID     uint   `json:"groupId"`
+	Color       string `json:"color"`
+	SpaceID     uint   `json:"spaceId"`
 }
 
 type ReorderTagReq struct {
@@ -34,12 +35,13 @@ type TagGroupDetail struct {
 }
 
 type Tag struct {
-	ID        uint       `json:"id"`
-	SpaceID   uint       `json:"spaceId"`
-	Content   string     `json:"content"`
-	GroupID   uint       `json:"groupId"`
-	Color     string     `json:"color"`
-	OrderNo   int        `json:"order"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt *time.Time `json:"updatedAt"`
+	ID          uint       `json:"id"`
+	SpaceID     uint       `json:"spaceId"`
+	Name        string     `json:"name"`
+	Description string     `json:"description"`
+	GroupID     uint       `json:"groupId"`
+	Color       string     `json:"color"`
+	OrderNo     int        `json:"order"`
+	CreatedAt   time.Time  `json:"createdAt"`
+	UpdatedAt   *time.Time `json:"updatedAt"`
 }

@@ -3,14 +3,14 @@ package spaces
 import (
 	"context"
 	"fmt"
-	"tidys-go/logic/dto"
-	"tidys-go/pkg/consts"
 	"time"
 
+	"tidys-go/logic/dto"
 	"tidys-go/logic/spaces/model"
 	"tidys-go/logic/spaces/repository"
 	tagsModel "tidys-go/logic/tags/model"
 	"tidys-go/logic/user"
+	"tidys-go/pkg/consts"
 	"tidys-go/pkg/errs"
 	"tidys-go/pkg/slices"
 
